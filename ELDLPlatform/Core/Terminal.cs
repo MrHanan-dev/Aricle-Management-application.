@@ -19,10 +19,10 @@ namespace ELDLPlatform.Core
 
         // Config files
         private static readonly string configDirectoryPath = Directory.GetCurrentDirectory() + "\\Configs";
-        private static readonly string webConfigPath = Directory.GetCurrentDirectory() + "\\WebConfig.txt";
-        private static readonly string dbConfigPath = Directory.GetCurrentDirectory() + "\\DBConfig.txt";
-        private static string webConfigFile = "";
-        private static string dbConfigFile = "";
+        private static readonly string webConfigPath = Directory.GetCurrentDirectory() + "\\Configs\\WebConfig.txt";
+        private static readonly string dbConfigPath = Directory.GetCurrentDirectory() + "\\Configs\\DBConfig.txt";
+        private static string[] webConfigFile = [];
+        private static string[] dbConfigFile = [];
 
         // Main thread, can exist only one at a time
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.Synchronized)]
@@ -47,7 +47,7 @@ namespace ELDLPlatform.Core
 
         private static void ParseInput(string input)
         {
-            List<string> i = input.Split(' ').ToList<string>();
+            List<string> i = input.Split(' ').ToList();
 
             if (i.Count < 2)
             {
@@ -58,10 +58,14 @@ namespace ELDLPlatform.Core
             i.RemoveAt(0);
             if (prefix == "CT")
             {
-                if (actions.TryGetValue(input, out Action? value)) { value(); }
+                if (actions.TryGetValue(i[0], out Action? value)) { value(); } else { Console.WriteLine("Command not found"); }
             }
-            else if (prefix == "SV") { SVTerminal.Terminal(i); }
-            else if (prefix == "DB") { DBTerminal.Terminal(i); }
+            else if (prefix == "SV") { SVTerminal.TerminalConsole(i); }
+            else if (prefix == "DB") { DBTerminal.TerminalConsole(i); }
+            else
+            {
+                Console.WriteLine("Terminal not found");
+            }
         }
 
         private static void Init()
@@ -76,7 +80,12 @@ namespace ELDLPlatform.Core
             actions.Add("Help", Help);
 
             Console.WriteLine("Action loading is completed...");
+            Help();
         }
+
+        internal static string GetCurrentDirectory() { return currentDirectoryPath; }
+
+        internal static string GetConfigDirectoryPath() { return configDirectoryPath; }
 
         private static void ShutDown()
         {
@@ -104,27 +113,28 @@ namespace ELDLPlatform.Core
             Console.WriteLine("Configs are loaded");
         }
 
-        private static string LoadFile(string path)
+        private static string[] LoadFile(string path)
         {
             try
             {
-                if (!Path.Exists(path))
+                if (!File.Exists(path))
                 {
                     Console.WriteLine("\n\n");
                     Console.WriteLine("Requested File doesn't exists!");
                     Console.WriteLine("Expected path: " + path);
                     Console.WriteLine("\n\n");
-                    return "";
+                    return [];
                 }
-                var s = File.ReadLines(path) + "";
-                Console.WriteLine("Users updated");
+                
+                var s = File.ReadAllLines(path);
+                Console.WriteLine("File loaded: " + s.Length);
                 return s;
             }
-            catch (Exception e) { PrintException(e); return ""; }
+            catch (Exception e) { PrintException(e); return []; }
         }
 
-        internal static string GetWebConfig() { return webConfigFile; }
-        internal static string GetDBConfig() { return dbConfigFile; }
+        internal static string[] GetWebConfig() { return webConfigFile; }
+        internal static string[] GetDBConfig() { return dbConfigFile; }
 
         internal static void PrintCurrentDirectory()
         {

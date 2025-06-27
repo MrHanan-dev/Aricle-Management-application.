@@ -17,10 +17,13 @@
     <None Update="Configs\WebConfig.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="WebSide\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="WebSide\" />
+    <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
   </ItemGroup>
 
 </Project>

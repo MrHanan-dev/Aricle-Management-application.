@@ -1,2 +1,2 @@
-﻿AllowedPrefixes:http://localhost:8000/ELDLPlatform^http://localhost:8001/ELDLPlatform^http://localhost:8005/ELDLPlatform^http://localhost:8000/ELDLPM^http://localhost:8001/ELDLPM^http://localhost:8005/ELDLPM
-DebugInfo:true
+﻿AllowedPrefixes=http://localhost:8000/ELDLPlatform/^http://localhost:8001/ELDLPlatform/^http://localhost:8005/ELDLPlatform/^http://localhost:8000/ELDLPM/^http://localhost:8001/ELDLPM/^http://localhost:8005/ELDLPM/
+DebugInfo=true

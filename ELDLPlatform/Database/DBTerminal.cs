@@ -16,7 +16,7 @@ namespace ELDLPlatform.Database
 
         private static readonly List <DBController> terminalControllers = [];
 
-        internal static void Terminal(List<string> input)
+        internal static void TerminalConsole(List<string> input)
         {
             terminalInput = input;
             if (actions.TryGetValue(terminalInput[0], out Action? value)) { value(); }
