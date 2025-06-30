@@ -200,35 +200,21 @@ namespace ELDLPlatform.Core
                 Console.WriteLine(request.UserHostAddress);
                 try
                 {
-                    if (apiAddresses.ContainsKey(request.UserHostAddress))
-                    {
-                        string debugText = streamReader.ReadToEnd();
-                        Encoding encoding = request.ContentEncoding;
+                    string debugText = streamReader.ReadToEnd();
+                    Encoding encoding = request.ContentEncoding;
 
-                        if (!string.IsNullOrEmpty(debugText))
-                        {
-                            JsonDocument clientData = JsonDocument.Parse(debugText);
-                            Console.WriteLine(debugText);
-                            //Dictionary<string, string> sd = clientData.RootElement.Deserialize<Dictionary<string, string>>()!;
-                            // buffer = Encoding.UTF8.GetBytes(ParseData(sd));
-                            buffer = Encoding.UTF8.GetBytes(ParseData(clientData.RootElement.Deserialize<Dictionary<string, string>>()!));
-                            response.ContentEncoding = request.ContentEncoding;
-                            response.ContentLength64 = buffer.Length;
-                            output = response.OutputStream;
-                            output.Write(buffer, 0, buffer.Length);
-                            output.Close(); // "Close()" sends data to a client
-                            return;
-                        }
-                    }
-                    else
+                    if (!string.IsNullOrEmpty(debugText))
                     {
-                        buffer = SVTerminal.WebPageBytes;
-                        response.ContentEncoding = Encoding.UTF8;
+                        JsonDocument clientData = JsonDocument.Parse(debugText);
+                        Console.WriteLine(debugText);
+                        //Dictionary<string, string> sd = clientData.RootElement.Deserialize<Dictionary<string, string>>()!;
+                        // buffer = Encoding.UTF8.GetBytes(ParseData(sd));
+                        buffer = Encoding.UTF8.GetBytes(ParseData(clientData.RootElement.Deserialize<Dictionary<string, string>>()!));
+                        response.ContentEncoding = request.ContentEncoding;
                         response.ContentLength64 = buffer.Length;
                         output = response.OutputStream;
                         output.Write(buffer, 0, buffer.Length);
-                        output.Close();
-                        Console.WriteLine("Page is opened");
+                        output.Close(); // "Close()" sends data to a client
                         return;
                     }
                 }
@@ -237,7 +223,7 @@ namespace ELDLPlatform.Core
                     Terminal.PrintException(e);
                 }
 
-                buffer = Encoding.UTF8.GetBytes("Oh hi");
+                buffer = SVTerminal.WebPageBytes;
                 response.ContentEncoding = Encoding.UTF8;
                 response.ContentLength64 = buffer.Length;
                 output = response.OutputStream;

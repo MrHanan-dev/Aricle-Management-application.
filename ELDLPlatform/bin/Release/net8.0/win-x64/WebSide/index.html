@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-16">
+    <title>GoNZ - Home page</title>
+    <style>
+        body{
+    font-size: 30px;
+    background-color: rgb(48, 59, 62);
+    color: rgb(0, 255, 255);
+    font-family: 'Courier New', Courier, monospace;
+    max-width: 100 hv;
+}
+
+.infotext{
+    text-align: left;
+    padding-left: 10%;
+    padding-right: 10%;
+    text-indent: 20px;
+}
+
+h1, h2, h3{
+    text-align: center;
+}
+
+.tnav{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-size: 70px;
+    border: 3px solid rgba(0, 255, 255, 0.715);
+    background-color: rgb(35, 43, 45);
+}
+
+.tnav a{
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-size: inherit;
+    text-decoration: none;
+    background-color: rgba(0, 255, 255, 0);
+    color: rgba(0, 255, 255, 1);
+    margin: 0;
+}
+
+.tnav a:hover{
+    background-color: rgb(16, 20, 21);
+    color: rgba(0, 255, 255, 1);
+}
+
+.textlink{
+    display: inline;
+    text-decoration: none;
+    text-align: center;
+    padding-left: 10%;
+    padding-right: 10%;
+    background-color: rgb(48, 59, 62);    
+    color: rgb(0, 255, 255);
+    text-indent: 0px;
+}
+
+.textlink:hover{
+    background-color: rgb(0, 255, 255);    
+    color: rgb(48, 59, 62);
+}
+
+.tnavInverse{
+    background-color: rgb(48, 59, 62);    
+    color: rgb(0, 255, 255);
+}
+
+.tnavInverse:hover{
+    background-color: rgb(0, 255, 255);    
+    color: rgb(48, 59, 62);
+}
+
+.separator{
+    display: inline;
+    font-size: 100px;
+    color: rgb(0, 255, 255);
+}
+
+form, label, input{
+    display: inline;
+    text-align: center;
+    align-self: center;
+}
+
+input{
+    background-color: rgb(48, 59, 62);
+    color: rgb(0, 255, 255);
+}
+
+label{
+    padding-left: 20%;
+    color: rgb(0, 255, 255);
+}
+
+.submitButton{
+    display: inline;
+    font-size: 30px;
+    text-align: center;
+    align-self: center;
+    border-style: outset;
+}
+
+.tourName{border: 3px solid rgba(0, 255, 255, 0.715);}
+    </style>
+</head>
+<body>
+    <div class="tnav">
+        <a href="home.html" class="tnavInverse">Home</a>
+        <a href="categories.html">Categories</a>
+        <a href="search.html">Search</a>
+        <a href="profile.html">Profile</a>
+    </div>
+    <div id="Home">
+        <h1>API Test</h1>
+        <p class="infotext">
+            GoNZ provides New Zealand tourism services for travelers from around the world.
+        </p>
+        <h2>teeeeeeeeeeeest</h2>
+        <p class="infotext">infotext</p>
+        <h2>Contact Information</h2>
+        <p class="infotext">E-mail: contact.GoNZ@gmail.com</p>
+
+
+        <div id="Login">
+            <h1>Login</h1>
+            <div id="regForm">
+                <form>~
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username"><br><br>
+                    <label for="password">Password</label>
+                    <input type="text" id="password" name="password">
+                </form>
+                <h2 style="text-align: center; width: 100%;"><button class="textlink submitButton" style="width: 1%; text-align: center; display: inline; white-space: nowrap;" onclick="login('Log in')">Log in</button></h2>
+                <h2 style="text-align: center; width: 100%;"><button class="textlink submitButton" style="width: 1%; text-align: center; display: inline; white-space: nowrap;" onclick="login('Sign in')">Sign in</button></h2>
+            </div>
+            <div id="regResult" style="display: none;">
+                <h3 id="uName">Username:</h3>
+                <h3 id="dEsc">Description:</h3>
+                <h3 id="role">Role:</h3>
+                <h2 style="text-align: center; width: 100%;"><a href="wishlist.html" class="textlink submitButton" style="width: 1%; text-align: center; display: inline; white-space: nowrap;">Wishlist</a></h2>
+                <h2 style="text-align: center; width: 100%;"><a href="cart.html" class="textlink submitButton" style="width: 1%; text-align: center; display: inline; white-space: nowrap;">Cart</a></h2>
+                <h2 style="text-align: center; width: 100%;"><a href="agents.html" class="textlink submitButton" style="width: 1%; text-align: center; display: inline; white-space: nowrap;">Edit users</a></h2>
+                <h2 style="text-align: center; width: 100%;"><button class="textlink submitButton" style="width: 1%; text-align: center; display: inline; white-space: nowrap;" onclick="logOut()">Log out</button></h2>
+            </div>
+        </div>
+        <p id="dsp" style="text-align: center;"></p>
+    </div>
+</body>
+</html>

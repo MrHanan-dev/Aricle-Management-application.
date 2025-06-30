@@ -7,20 +7,20 @@
       "RelativeMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|solutionrelative:core\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|c:\\assessments 8\\it6038\\it6037_assessment 2_20231410\\eldlplatform\\configs\\testusers.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|solutionrelative:configs\\testusers.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|c:\\assessments 8\\it6038\\it6037_assessment 2_20231410\\eldlplatform\\configs\\webconfig.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|solutionrelative:configs\\webconfig.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|c:\\assessments 8\\it6038\\it6037_assessment 2_20231410\\eldlplatform\\core\\svcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|solutionrelative:core\\svcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|c:\\assessments 8\\it6038\\it6037_assessment 2_20231410\\eldlplatform\\core\\svterminal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|solutionrelative:core\\svterminal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|c:\\assessments 8\\it6038\\it6037_assessment 2_20231410\\eldlplatform\\core\\svcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|solutionrelative:core\\svcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|c:\\assessments 8\\it6038\\it6037_assessment 2_20231410\\eldlplatform\\configs\\webconfig.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|solutionrelative:configs\\webconfig.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|c:\\assessments 8\\it6038\\it6037_assessment 2_20231410\\eldlplatform\\configs\\testusers.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|solutionrelative:configs\\testusers.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{47609296-FBE0-4F15-A1FA-2AB167809B91}|ELDLPlatform.csproj|c:\\assessments 8\\it6038\\it6037_assessment 2_20231410\\eldlplatform\\core\\terminal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -42,7 +42,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "TestUsers.txt",
               "DocumentMoniker": "C:\\Assessments 8\\IT6038\\IT6037_Assessment 2_20231410\\ELDLPlatform\\Configs\\TestUsers.txt",
               "RelativeDocumentMoniker": "Configs\\TestUsers.txt",
@@ -61,35 +61,36 @@
               "RelativeDocumentMoniker": "Core\\Server.cs",
               "ToolTip": "C:\\Assessments 8\\IT6038\\IT6037_Assessment 2_20231410\\ELDLPlatform\\Core\\Server.cs",
               "RelativeToolTip": "Core\\Server.cs",
-              "ViewState": "AgIAABMBAAAAAAAAAAAqwAoBAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAMoAAAAAAAAAAAAiwOEAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-24T22:48:59.401Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "WebConfig.txt",
               "DocumentMoniker": "C:\\Assessments 8\\IT6038\\IT6037_Assessment 2_20231410\\ELDLPlatform\\Configs\\WebConfig.txt",
               "RelativeDocumentMoniker": "Configs\\WebConfig.txt",
               "ToolTip": "C:\\Assessments 8\\IT6038\\IT6037_Assessment 2_20231410\\ELDLPlatform\\Configs\\WebConfig.txt",
               "RelativeToolTip": "Configs\\WebConfig.txt",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2025-06-18T00:13:10.317Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "SVTerminal.cs",
               "DocumentMoniker": "C:\\Assessments 8\\IT6038\\IT6037_Assessment 2_20231410\\ELDLPlatform\\Core\\SVTerminal.cs",
               "RelativeDocumentMoniker": "Core\\SVTerminal.cs",
               "ToolTip": "C:\\Assessments 8\\IT6038\\IT6037_Assessment 2_20231410\\ELDLPlatform\\Core\\SVTerminal.cs",
               "RelativeToolTip": "Core\\SVTerminal.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAgwEcAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAACwAAAAAAAAAAAAgwBcAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-18T00:06:27.289Z"
+              "WhenOpened": "2025-06-18T00:06:27.289Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -105,15 +106,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "SVController.cs",
               "DocumentMoniker": "C:\\Assessments 8\\IT6038\\IT6037_Assessment 2_20231410\\ELDLPlatform\\Core\\SVController.cs",
               "RelativeDocumentMoniker": "Core\\SVController.cs",
               "ToolTip": "C:\\Assessments 8\\IT6038\\IT6037_Assessment 2_20231410\\ELDLPlatform\\Core\\SVController.cs",
               "RelativeToolTip": "Core\\SVController.cs",
-              "ViewState": "AgIAAFYAAAAAAAAAAAAkwB0AAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAKcAAAAAAAAAAADwv7UAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-17T21:53:35.335Z"
+              "WhenOpened": "2025-06-17T21:53:35.335Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -136,6 +138,10 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{004be353-6879-467c-9d1e-9ac23cdf6d49}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
               "$type": "Bookmark",
