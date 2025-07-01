@@ -96,3 +96,9 @@ After logging in, users experience different functionalities based on their assi
 **Note:** The actual permissions are enforced in the backend logic (see `Server.cs`). The frontend adapts its interface based on the logged-in user's role, showing or hiding features accordingly.
 
 --- 
+<img width="953" alt="image" src="https://github.com/user-attachments/assets/02540969-696c-4905-8579-2c98d03cab66" />
+<img width="955" alt="image" src="https://github.com/user-attachments/assets/64f8021c-c0f3-46ac-906c-7ba8576585bc" />
+<img width="958" alt="image" src="https://github.com/user-attachments/assets/8ecbf415-81fc-42cf-8d8f-97b606364e0a" />
+
+
+
