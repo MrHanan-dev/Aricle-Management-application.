@@ -69,3 +69,34 @@ This repository contains a full-stack Article Management Application. It include
 
 ## Author
 - [Your Name] 
+
+---
+
+## User Roles & Functionality
+
+After logging in, users experience different functionalities based on their assigned role:
+
+### Superadmin
+- Full access to all features
+- Can add, edit, and delete any user (including Admins)
+- Can manage all articles
+- Can view and search all users and articles
+
+### Admin
+- Can add, edit, and delete users (except Superadmins)
+- Can manage all articles
+- Can view and search all users and articles
+
+### Tutor
+- Can view and search articles
+- Can add and edit articles
+- Cannot manage users
+
+### Student
+- Can view and search articles
+- Cannot add, edit, or delete articles
+- Cannot manage users
+
+**Note:** The actual permissions are enforced in the backend logic (see `Server.cs`). The frontend adapts its interface based on the logged-in user's role, showing or hiding features accordingly.
+
+--- 
