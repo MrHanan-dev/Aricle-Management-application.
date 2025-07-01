@@ -1,0 +1,922 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article Manager</title>
+  <style>
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  background: #f4f6fa;
+  color: #222;
+}
+
+.navbar {
+  background: #1976d2;
+  color: #fff;
+  padding: 0.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-links li a:hover {
+  color: #ffeb3b;
+}
+
+main {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 2rem;
+  min-height: 400px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+input, select {
+  padding: 0.5rem;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+button {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #125ea2;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 0.95rem;
+}
+
+.success {
+  color: #388e3c;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+  main {
+    padding: 1rem;
+  }
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .nav-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">Article Manager</div>
+    <ul class="nav-links">
+      <li><a href="#home" id="nav-home">Home</a></li>
+      <li><a href="#articles" id="nav-articles">Articles</a></li>
+      <li><a href="#users" id="nav-users">Users</a></li>
+      <li><a href="#profile" id="nav-profile">Profile</a></li>
+      <li><a href="#login" id="nav-login">Login</a></li>
+      <li><a href="#logout" id="nav-logout" style="display:none;">Logout</a></li>
+    </ul>
+  </nav>
+  <main id="main-content">
+    <!-- Dynamic content will be injected here by script.js -->
+  </main>
+  <script>
+// Simple SPA navigation and state
+const main = document.getElementById('main-content');
+const navLinks = document.querySelectorAll('.nav-links a');
+let currentUser = null;
+
+// Make showPage async and use await for async render functions
+async function showPage(page) {
+  navLinks.forEach(link => link.classList.remove('active'));
+  const nav = document.getElementById('nav-' + page);
+  if (nav) nav.classList.add('active');
+  main.innerHTML = '';
+  switch(page) {
+    case 'login': await renderLogin(); break;
+    case 'signup': await renderSignup(); break;
+    case 'profile': await renderProfile(); break;
+    case 'users': await renderUsers(); break;
+    case 'articles': await renderArticles(); break;
+    case 'home': default: await renderHome(); break;
+  }
+}
+
+window.addEventListener('hashchange', () => {
+  const page = location.hash.replace('#', '') || 'home';
+  showPage(page);
+});
+
+// Robust session restore after all functions are defined
+(function restoreSession() {
+  const userStr = sessionStorage.getItem('user');
+  const cookie = sessionStorage.getItem('cookie');
+  if (userStr && cookie) {
+    try {
+      currentUser = JSON.parse(userStr);
+      if (!currentUser || !currentUser.login) currentUser = null;
+    } catch {
+      currentUser = null;
+    }
+  } else {
+    currentUser = null;
+  }
+  updateNav();
+  const page = location.hash.replace('#', '') || 'home';
+  showPage(page);
+})();
+
+function setSession(user, cookie) {
+  currentUser = user;
+  sessionStorage.setItem('user', JSON.stringify(user));
+  sessionStorage.setItem('cookie', cookie);
+}
+
+function clearSession() {
+  currentUser = null;
+  sessionStorage.removeItem('user');
+  sessionStorage.removeItem('cookie');
+}
+
+function getSessionCookie() {
+  return sessionStorage.getItem('cookie') || '';
+}
+
+document.getElementById('nav-logout').onclick = () => {
+  clearSession();
+  updateNav();
+  showPage('login');
+};
+
+// Fix role checks in updateNav to be case-insensitive
+function updateNav() {
+  if (currentUser) {
+    document.getElementById('nav-home').style.display = '';
+    document.getElementById('nav-articles').style.display = '';
+    document.getElementById('nav-profile').style.display = '';
+    document.getElementById('nav-login').style.display = 'none';
+    document.getElementById('nav-logout').style.display = '';
+    const role = (currentUser.role || '').toLowerCase();
+    if (role === 'admin' || role === 'superadmin') {
+      document.getElementById('nav-users').style.display = '';
+    } else {
+      document.getElementById('nav-users').style.display = 'none';
+    }
+  } else {
+    document.getElementById('nav-home').style.display = 'none';
+    document.getElementById('nav-articles').style.display = 'none';
+    document.getElementById('nav-profile').style.display = 'none';
+    document.getElementById('nav-users').style.display = 'none';
+    document.getElementById('nav-login').style.display = '';
+    document.getElementById('nav-logout').style.display = 'none';
+  }
+}
+
+// Helper: fetch roles from backend
+async function fetchRoles() {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requestType: 'getRoles', cookie: getSessionCookie() })
+    });
+    const data = await res.json();
+    if (data.result === 'success') {
+      try {
+        return JSON.parse(data.data);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  } catch (err) {
+    console.error('Error fetching roles:', err);
+    return [];
+  }
+}
+
+// Helper: fetch users from backend
+async function fetchUsers(searchString = '', roles = []) {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requestType: 'searchUsers',
+        cookie: getSessionCookie(),
+        searchString,
+        roles: JSON.stringify(roles)
+      })
+    });
+    let data;
+    try {
+      data = await res.json();
+    } catch (err) {
+      const text = await res.text();
+      console.error('Error fetching users:', err, text);
+      return { error: 'Backend did not return valid JSON', raw: text };
+    }
+    if (data.result === 'success') {
+      if (typeof data.data === 'string') {
+        try {
+          return JSON.parse(data.data);
+        } catch {
+          return [];
+        }
+      }
+      return data.data || [];
+    }
+    return [];
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    return [];
+  }
+}
+
+// Helper: delete user
+async function deleteUser(login) {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  const res = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'deleteUser',
+      cookie: getSessionCookie(),
+      userLogin: login
+    })
+  });
+  return await res.json();
+}
+
+// Helper: edit user
+async function editUser(login, username, password, role) {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  const res = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'editUser',
+      cookie: getSessionCookie(),
+      userLogin: login,
+      data: JSON.stringify({ login, username, password, role })
+    })
+  });
+  return await res.json();
+}
+
+// Render Users page with list, create, edit, delete
+async function renderUsers() {
+  main.innerHTML = '';
+  const role = (currentUser && currentUser.role) ? currentUser.role.toLowerCase() : '';
+  if (!currentUser || (role !== 'admin' && role !== 'superadmin')) {
+    main.innerHTML = '<h2>Users</h2><p>Access denied. Only admins can manage users.</p>';
+    return;
+  }
+  let roles = [];
+  let users = [];
+  let errorMsg = '';
+  try {
+    roles = await fetchRoles();
+    users = await fetchUsers();
+    if (users && users.error) {
+      errorMsg = users.error + ': ' + users.raw;
+      users = [];
+    }
+  } catch (err) {
+    errorMsg = 'Error fetching users or roles from backend.';
+    console.error('User management error:', err);
+  }
+  if (errorMsg) {
+    main.innerHTML = `<h2>Users</h2><div class="error">${errorMsg}</div>`;
+    return;
+  }
+  let filteredUsers = users;
+  main.innerHTML = `
+    <h2>User Management</h2>
+    <form id="create-user-form">
+      <input type="text" name="login" placeholder="Username" required maxlength="30" autocomplete="username">
+      <input type="text" name="username" placeholder="Display Name" required maxlength="30">
+      <input type="password" name="password" placeholder="Password" required maxlength="30" autocomplete="new-password">
+      <select name="role" required>
+        ${roles.map(r => `<option value="${r}">${r}</option>`).join('')}
+      </select>
+      <div id="user-create-error" class="error"></div>
+      <div id="user-create-success" class="success"></div>
+      <button type="submit">Create User</button>
+    </form>
+    <h3>All Users</h3>
+    <input type="text" id="user-search" placeholder="Search users...">
+    <table id="users-table" border="1" style="width:100%;margin-top:1em;">
+      <thead><tr><th>Login</th><th>Display Name</th><th>Role</th><th>Actions</th></tr></thead>
+      <tbody id="users-tbody">
+        ${users.length === 0 ? `<tr><td colspan="4">No users found or backend error.</td></tr>` : users.map(u => `
+          <tr data-login="${u.login}">
+            <td>${u.login}</td>
+            <td><input type="text" value="${u.username}" class="edit-username"></td>
+            <td><select class="edit-role">${roles.map(r => `<option value="${r}"${u.role===r?' selected':''}>${r}</option>`).join('')}</select></td>
+            <td>
+              <button class="edit-user-btn">Save</button>
+              <button class="delete-user-btn">Delete</button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+    <div id="user-action-msg" class="success"></div>
+  `;
+  // Create user handler
+  document.getElementById('create-user-form').onsubmit = async e => {
+    e.preventDefault();
+    const login = e.target.login.value.trim();
+    const username = e.target.username.value.trim();
+    const password = e.target.password.value;
+    const role = e.target.role.value;
+    document.getElementById('user-create-error').textContent = '';
+    document.getElementById('user-create-success').textContent = '';
+    const allowed = /^[A-Za-z0-9~!@#$%^*_+=-]+$/;
+    if (!login || !username || !password) {
+      document.getElementById('user-create-error').textContent = 'All fields are required.';
+      return;
+    }
+    if (!allowed.test(login) || !allowed.test(password)) {
+      document.getElementById('user-create-error').textContent = 'Fields contain invalid characters.';
+      return;
+    }
+    if (login.length > 30 || password.length > 30 || username.length > 30) {
+      document.getElementById('user-create-error').textContent = 'Fields must be at most 30 characters.';
+      return;
+    }
+    try {
+      const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+      const payload = {
+        requestType: 'addUser',
+        cookie: getSessionCookie(),
+        userLogin: 'None',
+        data: JSON.stringify({
+          login,
+          username,
+          password,
+          role
+        })
+      };
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        const text = await res.text();
+        document.getElementById('user-create-error').textContent = 'Server error: ' + text;
+        return;
+      }
+      if (data.result === 'success') {
+        document.getElementById('user-create-success').textContent = 'User created successfully!';
+        e.target.reset();
+        await renderUsers();
+      } else {
+        document.getElementById('user-create-error').textContent = data.operationResultMessage || 'User creation failed.';
+      }
+    } catch (err) {
+      document.getElementById('user-create-error').textContent = 'Unexpected error. Please try again.';
+      console.error('User creation error:', err);
+    }
+  };
+  // Edit user handler
+  document.querySelectorAll('.edit-user-btn').forEach(btn => {
+    btn.onclick = async function() {
+      const tr = this.closest('tr');
+      const login = tr.getAttribute('data-login');
+      const username = tr.querySelector('.edit-username').value;
+      const role = tr.querySelector('.edit-role').value;
+      // For demo, password is not editable here (could add a modal for password change)
+      const password = '';
+      const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+      const payload = {
+        requestType: 'editUser',
+        cookie: getSessionCookie(),
+        userLogin: login,
+        data: JSON.stringify({ login, username, password, role })
+      };
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await res.json();
+      document.getElementById('user-action-msg').textContent = result.result === 'success' ? 'User updated!' : (result.operationResultMessage || 'Update failed.');
+      await renderUsers();
+    };
+  });
+  // Delete user handler
+  document.querySelectorAll('.delete-user-btn').forEach(btn => {
+    btn.onclick = async function() {
+      const tr = this.closest('tr');
+      const login = tr.getAttribute('data-login');
+      if (confirm('Delete user ' + login + '?')) {
+        const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+        const payload = {
+          requestType: 'deleteUser',
+          cookie: getSessionCookie(),
+          userLogin: login
+        };
+        const res = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        document.getElementById('user-action-msg').textContent = result.result === 'success' ? 'User deleted!' : (result.operationResultMessage || 'Delete failed.');
+        await renderUsers();
+      }
+    };
+  });
+  // User search (client-side filtering)
+  document.getElementById('user-search').oninput = function() {
+    const val = this.value.trim().toLowerCase();
+    const filtered = users.filter(u =>
+      u.login.toLowerCase().includes(val) ||
+      (u.username && u.username.toLowerCase().includes(val))
+    );
+    const tbody = document.getElementById('users-tbody');
+    tbody.innerHTML = filtered.length === 0
+      ? `<tr><td colspan="4">No users found.</td></tr>`
+      : filtered.map(u => `
+        <tr data-login="${u.login}">
+          <td>${u.login}</td>
+          <td><input type="text" value="${u.username}" class="edit-username"></td>
+          <td><select class="edit-role">${roles.map(r => `<option value="${r}"${u.role===r?' selected':''}>${r}</option>`).join('')}</select></td>
+          <td>
+            <button class="edit-user-btn">Save</button>
+            <button class="delete-user-btn">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+  };
+}
+
+// Fix login logic: set user info directly after login, do not fetch getUser
+async function renderLogin() {
+  main.innerHTML = `
+    <h2>Login</h2>
+    <form id="login-form">
+      <input type="text" name="login" placeholder="Username" required autocomplete="username">
+      <input type="password" name="password" placeholder="Password" required autocomplete="current-password">
+      <div id="login-error" class="error"></div>
+      <button type="submit">Login</button>
+    </form>
+    <p>Test users: <code>TestLogin/TestPassword</code>, <code>TestSuperadmin/TestSuperadminPassword</code>, <code>TestAdmin/TestAdminPassword</code>, <code>TestTutor/TestTutorPassword</code>, <code>TestStudent/TestStudentPassword</code></p>
+  `;
+  document.getElementById('login-form').onsubmit = async e => {
+    e.preventDefault();
+    const login = e.target.login.value.trim();
+    const password = e.target.password.value;
+    document.getElementById('login-error').textContent = '';
+    if (!login || !password) {
+      document.getElementById('login-error').textContent = 'Please enter both username and password.';
+      return;
+    }
+    try {
+      const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ requestType: 'login', login, password })
+      });
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        const text = await res.text();
+        document.getElementById('login-error').textContent = 'Server error: ' + text;
+        return;
+      }
+      if (data.result === 'success' && data.cookie) {
+        // Set user info directly from login (since backend getUser is restrictive)
+        // You may want to map login to role using a lookup or by storing role in sessionStorage after login
+        // For now, we use the login name to infer the role for demo purposes
+        let role = '';
+        if (/superadmin/i.test(login)) role = 'Superadmin';
+        else if (/admin/i.test(login)) role = 'Admin';
+        else if (/tutor/i.test(login)) role = 'Tutor';
+        else if (/student/i.test(login)) role = 'Student';
+        const user = {
+          login,
+          username: login,
+          role
+        };
+        setSession(user, data.cookie);
+        updateNav();
+        showPage('home');
+      } else {
+        document.getElementById('login-error').textContent = data.operationResultMessage || 'Invalid username or password.';
+      }
+    } catch (err) {
+      document.getElementById('login-error').textContent = 'Unexpected error. Please try again.';
+    }
+  };
+}
+
+async function renderHome() {
+  if (!currentUser) {
+    main.innerHTML = `<h2>Welcome to Article Manager</h2>
+      <p>Please log in to view and manage articles.</p>`;
+    return;
+  }
+  main.innerHTML = `<h2>Welcome to Article Manager</h2><div id="home-articles"></div>`;
+  const isAdmin = currentUser && ["admin","superadmin"].includes((currentUser.role||'').toLowerCase());
+  const articles = await fetchArticles();
+  document.getElementById('home-articles').innerHTML = `
+    <h3>Featured Articles</h3>
+    ${renderArticleList(articles.slice(0,3), isAdmin)}
+    <a href="#articles" class="see-all-link">See all articles &rarr;</a>
+  `;
+  window._onViewArticle = async (id) => {
+    location.hash = `#article-${id}`;
+  };
+}
+
+// Profile page: use info from sessionStorage only
+async function renderProfile() {
+  if (!currentUser) {
+    main.innerHTML = '<h2>Profile</h2><p>You must be logged in to view your profile.</p>';
+    return;
+  }
+  main.innerHTML = `
+    <h2>Profile</h2>
+    <table>
+      <tr><td><b>Login:</b></td><td>${currentUser.login || ''}</td></tr>
+      <tr><td><b>Display Name:</b></td><td>${currentUser.username || ''}</td></tr>
+      <tr><td><b>Role:</b></td><td>${currentUser.role || '<span style="color:red">(not set)</span>'}</td></tr>
+    </table>
+  `;
+}
+
+async function renderArticles() {
+  main.innerHTML = `<h2>Articles</h2>
+    <div id="articles-controls"></div>
+    <div id="articles-list"></div>
+    <div id="article-action-msg" class="success"></div>
+  `;
+  const isAdmin = currentUser && ["admin","superadmin"].includes((currentUser.role||'').toLowerCase());
+  let articles = await fetchArticles();
+  let categories = [...new Set(articles.map(a => a.category))];
+  // Controls
+  let controls = `<input type="text" id="article-search" placeholder="Search articles...">`;
+  controls += `<select id="article-category"><option value="">All Categories</option>${categories.map(c => `<option value="${c}">${c}</option>`).join('')}</select>`;
+  if (isAdmin) controls += `<button id="add-article-btn">Add Article</button>`;
+  document.getElementById('articles-controls').innerHTML = controls;
+  // List
+  const renderList = (filtered) => {
+    document.getElementById('articles-list').innerHTML = renderArticleList(filtered, isAdmin);
+    window._onViewArticle = async (id) => {
+      location.hash = `#article-${id}`;
+    };
+    window._onEditArticle = async (id) => {
+      renderArticleForm(await fetchArticle(id), true);
+    };
+    window._onDeleteArticle = async (id) => {
+      if (confirm('Delete this article?')) {
+        const res = await deleteArticle(id);
+        document.getElementById('article-action-msg').textContent = res.result === 'success' ? 'Article deleted!' : 'Delete failed.';
+        articles = await fetchArticles();
+        renderList(articles);
+      }
+    };
+  };
+  renderList(articles);
+  // Search/filter
+  document.getElementById('article-search').oninput = function() {
+    const val = this.value.trim().toLowerCase();
+    const cat = document.getElementById('article-category').value;
+    let filtered = articles.filter(a =>
+      (a.name.toLowerCase().includes(val) || a.category.toLowerCase().includes(val)) &&
+      (!cat || a.category === cat)
+    );
+    renderList(filtered);
+  };
+  document.getElementById('article-category').onchange = function() {
+    document.getElementById('article-search').oninput();
+  };
+  if (isAdmin) {
+    document.getElementById('add-article-btn').onclick = () => renderArticleForm(null, true);
+  }
+}
+
+async function renderSignup() {
+  main.innerHTML = `<h2>Sign Up</h2><p>This is the sign up page.</p>`;
+}
+
+// --- Article Management ---
+async function fetchArticles(searchString = '', categories = []) {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requestType: 'searchArticles',
+        cookie: getSessionCookie(),
+        searchString,
+        categories: JSON.stringify(categories)
+      })
+    });
+    let data = await res.json();
+    if (data.result === 'success') {
+      if (typeof data.data === 'string') {
+        try { return JSON.parse(data.data); } catch { return []; }
+      }
+      return data.data || [];
+    }
+    return [];
+  } catch (err) {
+    console.error('Error fetching articles:', err);
+    return [];
+  }
+}
+
+async function fetchArticle(articleID) {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  try {
+    const res = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        requestType: 'getArticle',
+        cookie: getSessionCookie(),
+        articleID
+      })
+    });
+    let data = await res.json();
+    if (data.result === 'success') {
+      if (typeof data.data === 'string') {
+        try { return JSON.parse(data.data); } catch { return null; }
+      }
+      return data.data || null;
+    }
+    return null;
+  } catch (err) {
+    console.error('Error fetching article:', err);
+    return null;
+  }
+}
+
+async function addArticle(article) {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  const res = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'addArticle',
+      cookie: getSessionCookie(),
+      articleID: 'None',
+      data: JSON.stringify(article)
+    })
+  });
+  return await res.json();
+}
+
+async function editArticle(articleID, article) {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  const res = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'editArticle',
+      cookie: getSessionCookie(),
+      articleID,
+      data: JSON.stringify(article)
+    })
+  });
+  return await res.json();
+}
+
+async function deleteArticle(articleID) {
+  const apiUrl = 'http://localhost:8001/ELDLPlatform/api';
+  const res = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requestType: 'deleteArticle',
+      cookie: getSessionCookie(),
+      article: articleID
+    })
+  });
+  return await res.json();
+}
+
+// --- Article UI ---
+function articleCard(article, isAdmin, onView, onEdit, onDelete) {
+  return `
+    <div class="article-card">
+      <div class="article-main">
+        <div class="article-title" onclick="window._onViewArticle('${article.ID}')">${article.name}</div>
+        <div class="article-meta">${article.category} &middot; ${article.type} &middot; ${article.year !== 'None' ? article.year : ''}</div>
+        <div class="article-about">${article.about}</div>
+      </div>
+      ${isAdmin ? `<div class="article-actions">
+        <button onclick="window._onEditArticle('${article.ID}')">Edit</button>
+        <button onclick="window._onDeleteArticle('${article.ID}')">Delete</button>
+      </div>` : ''}
+    </div>
+  `;
+}
+
+function renderArticleList(articles, isAdmin) {
+  if (!articles.length) return '<div class="empty-list">No articles found.</div>';
+  return `<div class="article-list">
+    ${articles.map(a => articleCard(a, isAdmin)).join('')}
+  </div>`;
+}
+
+// --- Article Details Page ---
+async function renderArticleDetail(articleID) {
+  const article = await fetchArticle(articleID);
+  if (!article) {
+    main.innerHTML = '<h2>Article Not Found</h2>';
+    return;
+  }
+  const isAdmin = currentUser && ["admin","superadmin"].includes((currentUser.role||'').toLowerCase());
+  main.innerHTML = `
+    <div class="article-detail">
+      <h2>${article.name}</h2>
+      <div class="article-meta">${article.category} &middot; ${article.type} &middot; ${article.year !== 'None' ? article.year : ''}</div>
+      <div class="article-about">${article.about}</div>
+      <table class="article-info">
+        <tr><td><b>Category:</b></td><td>${article.category}</td></tr>
+        <tr><td><b>Type:</b></td><td>${article.type}</td></tr>
+        <tr><td><b>Name:</b></td><td>${article.name}</td></tr>
+        <tr><td><b>Born:</b></td><td>${article.born}</td></tr>
+        <tr><td><b>Died:</b></td><td>${article.died}</td></tr>
+        <tr><td><b>Nationality:</b></td><td>${article.nationality}</td></tr>
+        <tr><td><b>Known For:</b></td><td>${article.knownFor}</td></tr>
+        <tr><td><b>Notable Work:</b></td><td>${article.notableWork}</td></tr>
+        <tr><td><b>About:</b></td><td>${article.about}</td></tr>
+        <tr><td><b>Year:</b></td><td>${article.year}</td></tr>
+        <tr><td><b>Medium:</b></td><td>${article.medium}</td></tr>
+        <tr><td><b>Dimensions:</b></td><td>${article.dimensions}</td></tr>
+        <tr><td><b>Location:</b></td><td>${article.location}</td></tr>
+        <tr><td><b>Designed By Developer:</b></td><td>${article.designedByDeveloper}</td></tr>
+      </table>
+      <div class="article-detail-actions">
+        <button onclick="location.hash='#articles'">Back to Articles</button>
+        ${isAdmin ? `<button onclick="renderArticleForm(${JSON.stringify(article)}, true)">Edit Article</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// --- Article Form (Add/Edit) ---
+function renderArticleForm(article, isEdit) {
+  const isNew = !article;
+  const art = article || {
+    category: '', type: '', name: '', born: '', died: '', nationality: '', knownFor: '', notableWork: '', about: '', year: '', medium: '', dimensions: '', location: '', designedByDeveloper: ''
+  };
+  main.innerHTML = `
+    <h2>${isNew ? 'Add' : 'Edit'} Article</h2>
+    <form id="article-form">
+      <input type="text" name="name" placeholder="Name" required value="${art.name || ''}">
+      <input type="text" name="category" placeholder="Category" required value="${art.category || ''}">
+      <input type="text" name="type" placeholder="Type" required value="${art.type || ''}">
+      <input type="text" name="year" placeholder="Year" value="${art.year || ''}">
+      <input type="text" name="born" placeholder="Born" value="${art.born || ''}">
+      <input type="text" name="died" placeholder="Died" value="${art.died || ''}">
+      <input type="text" name="nationality" placeholder="Nationality" value="${art.nationality || ''}">
+      <input type="text" name="knownFor" placeholder="Known For" value="${art.knownFor || ''}">
+      <input type="text" name="notableWork" placeholder="Notable Work" value="${art.notableWork || ''}">
+      <input type="text" name="about" placeholder="About" value="${art.about || ''}">
+      <input type="text" name="medium" placeholder="Medium" value="${art.medium || ''}">
+      <input type="text" name="dimensions" placeholder="Dimensions" value="${art.dimensions || ''}">
+      <input type="text" name="location" placeholder="Location" value="${art.location || ''}">
+      <input type="text" name="designedByDeveloper" placeholder="Designed By Developer" value="${art.designedByDeveloper || ''}">
+      <div id="article-form-error" class="error"></div>
+      <div id="article-form-success" class="success"></div>
+      <button type="submit">${isNew ? 'Add' : 'Save'} Article</button>
+      <button type="button" onclick="location.hash='#articles'">Cancel</button>
+    </form>
+  `;
+  document.getElementById('article-form').onsubmit = async e => {
+    e.preventDefault();
+    const form = e.target;
+    const articleData = {
+      name: form.name.value.trim(),
+      category: form.category.value.trim(),
+      type: form.type.value.trim(),
+      year: form.year.value.trim() || 'None',
+      born: form.born.value.trim() || 'None',
+      died: form.died.value.trim() || 'None',
+      nationality: form.nationality.value.trim() || 'None',
+      knownFor: form.knownFor.value.trim() || 'None',
+      notableWork: form.notableWork.value.trim() || 'None',
+      about: form.about.value.trim() || 'None',
+      medium: form.medium.value.trim() || 'None',
+      dimensions: form.dimensions.value.trim() || 'None',
+      location: form.location.value.trim() || 'None',
+      designedByDeveloper: form.designedByDeveloper.value.trim() || 'None'
+    };
+    let res;
+    if (isNew) {
+      res = await addArticle(articleData);
+    } else {
+      res = await editArticle(article.ID, articleData);
+    }
+    if (res.result === 'success') {
+      location.hash = '#articles';
+    } else {
+      document.getElementById('article-form-error').textContent = 'Failed to save article.';
+    }
+  };
+}
+
+// --- Routing for Article Details ---
+const oldHashChange = window.onhashchange;
+window.onhashchange = function() {
+  const hash = location.hash.replace('#', '');
+  if (hash.startsWith('article-')) {
+    const id = hash.replace('article-', '');
+    renderArticleDetail(id);
+  } else {
+    if (oldHashChange) oldHashChange();
+    else {
+      const page = hash || 'home';
+      showPage(page);
+    }
+  }
+};
+
+// --- Modern Article Card CSS ---
+const style = document.createElement('style');
+style.innerHTML = `
+.article-list { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.article-card { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 1.2rem 1.5rem; min-width: 260px; max-width: 340px; flex: 1 1 300px; display: flex; flex-direction: column; justify-content: space-between; transition: box-shadow 0.2s; cursor: pointer; }
+.article-card:hover { box-shadow: 0 4px 16px rgba(25, 118, 210, 0.15); }
+.article-title { font-size: 1.2rem; font-weight: bold; color: #1976d2; margin-bottom: 0.3rem; cursor: pointer; }
+.article-meta { font-size: 0.95rem; color: #666; margin-bottom: 0.5rem; }
+.article-about { font-size: 1rem; color: #222; margin-bottom: 0.7rem; }
+.article-actions { display: flex; gap: 0.5rem; }
+.article-actions button { background: #1976d2; color: #fff; border: none; padding: 0.4rem 0.9rem; border-radius: 4px; font-size: 0.95rem; cursor: pointer; transition: background 0.2s; }
+.article-actions button:hover { background: #125ea2; }
+.article-detail { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 2rem; max-width: 700px; margin: 2rem auto; }
+.article-detail h2 { margin-top: 0; }
+.article-detail-actions { margin-top: 1.5rem; }
+.article-detail-actions button { margin-right: 1rem; }
+.article-info { width: 100%; border-collapse: collapse; margin-top: 1.2rem; }
+.article-info td { padding: 0.3rem 0.7rem; border-bottom: 1px solid #eee; }
+.empty-list { color: #888; font-size: 1.1rem; margin: 2rem 0; }
+.see-all-link { display: inline-block; margin-top: 1rem; color: #1976d2; text-decoration: none; font-weight: 500; }
+.see-all-link:hover { text-decoration: underline; }
+`;
+document.head.appendChild(style);
+  </script>
+</body>
+</html> 
