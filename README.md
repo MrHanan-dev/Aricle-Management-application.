@@ -67,10 +67,6 @@ This repository contains a full-stack Article Management Application. It include
 
 ---
 
-## Author
-- [Your Name] 
-
----
 
 ## User Roles & Functionality
 
